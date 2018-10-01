@@ -1,0 +1,14 @@
+.stack-work/
+haskell-day-syocy.cabal
+*~
+
+*.aux
+*.log
+*.ltjruby
+*.nav
+*.pdf
+*.snm
+*.synctex.gz
+*.toc
+*.out
+auto/

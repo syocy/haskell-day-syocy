@@ -1,0 +1,65 @@
+name:                haskell-day-syocy
+version:             0.1.0.0
+github:              "syocy/haskell-day-syocy"
+license:             BSD3
+author:              "OSANAI Kazuyoshi"
+maintainer:          "osmium.k@gmail.com"
+copyright:           "(c) 2017-2018 OSANAI Kazuyoshi"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/syocy/haskell-day-syocy#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+    - dhall
+    - parallel
+    - stm
+    - text
+    - bytestring
+
+executables:
+  haskell-day-syocy-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-day-syocy
+
+tests:
+  doctests:
+    main: doctests.hs
+    source-dirs: test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - haskell-day-syocy
+      - doctest
+      - doctest-discover
+  # haskell-day-syocy-test:
+  #   main:                Spec.hs
+  #   source-dirs:         test
+  #   ghc-options:
+  #   - -threaded
+  #   - -rtsopts
+  #   - -with-rtsopts=-N
+  #   dependencies:
+  #   - haskell-day-syocy

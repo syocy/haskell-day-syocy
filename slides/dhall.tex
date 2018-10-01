@@ -1,0 +1,106 @@
+\documentclass[unicode,12pt]{beamer}
+\usepackage{luatexja}
+\usepackage[hiragino-pro]{luatexja-preset}
+\usepackage{luatexja-fontspec}
+\renewcommand{\kanjifamilydefault}{\gtdefault}
+
+\setmonofont{x14y24pxHeadUpDaisy}
+\newfontfamily{\magnolia}{Magnolia Script}
+\newfontfamily{\brush}{Brush Script MT}
+
+\usepackage{luatexja-ruby}
+\usepackage{url}
+\usepackage{listings}
+
+\lstdefinelanguage{dhall}{
+  keywords={let, in},
+  keywordstyle=\color{main}\bfseries,
+  keywords=[2]{Bool, Integer, Double, Text, List, Optional},
+  keywordstyle=[2]\color{accent}\bfseries,
+  identifierstyle=\color{text},
+  sensitive=false,
+  comment=[l]{--},
+  %morecomment=[s]{{-}{-}},
+  commentstyle=\color{subtext}\ttfamily,
+  stringstyle=\color{main}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{yaml}{
+  keywords={let, in},
+  keywordstyle=\color{main}\bfseries,
+  identifierstyle=\color{text},
+  sensitive=false,
+  comment=[l]{--},
+  %morecomment=[s]{{-}{-}},
+  commentstyle=\color{subtext}\ttfamily,
+  stringstyle=\color{main}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+   language=dhall,
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false
+}
+
+\definecolor{main}{RGB}{49,118,137}
+\definecolor{accent}{RGB}{220,94,74}
+\definecolor{text}{RGB}{50,50,50}
+\definecolor{subtext}{RGB}{80,80,80}
+
+\usetheme{Copenhagen}
+\usecolortheme{beaver}
+\setbeamertemplate{footline}[page number]
+
+\setbeamercolor{alerted text}{fg=accent}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{block body alerted}{bg=normal text.bg!90!black}
+\setbeamercolor{block body}{bg=normal text.bg!90!black}
+\setbeamercolor{block body example}{bg=normal text.bg!90!black}
+\setbeamercolor{block title alerted}{use={normal text,alerted text},fg=alerted text.fg!75!normal text.fg,bg=normal text.bg!75!black}
+\setbeamercolor{block title}{bg=main}
+\setbeamercolor{block title example}{use={normal text,example text},fg=example text.fg!75!normal text.fg,bg=normal text.bg!75!black}
+\setbeamercolor{fine separation line}{}
+\setbeamercolor{frametitle}{fg=main}
+\setbeamercolor{item projected}{fg=subtext}
+\setbeamercolor{normal text}{fg=subtext}
+\setbeamercolor{palette sidebar primary}{use=normal text,fg=normal text.fg}
+\setbeamercolor{palette sidebar quaternary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar secondary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar tertiary}{use=normal text,fg=normal text.fg}
+\setbeamercolor{section in sidebar}{fg=brown}
+\setbeamercolor{section in sidebar shaded}{fg=grey}
+\setbeamercolor{separation line}{}
+\setbeamercolor{sidebar}{bg=red}
+\setbeamercolor{sidebar}{parent=palette primary}
+\setbeamercolor{structure}{bg=white, fg=main}
+\setbeamercolor{subsection in sidebar}{fg=brown}
+\setbeamercolor{subsection in sidebar shaded}{fg=grey}
+\setbeamercolor{title}{fg=main}
+\setbeamercolor{titlelike}{fg=main}
+
+\title{Dhall: Haskellの新たなキラーアプリ}
+\author[@syocy]{
+    \frame{\includegraphics[width=1cm]{icon.jpg}}\\%
+    \vspace{0.5em}%
+    @syocy%
+}
+
+%\institute{Engineering team}
+\date{2018-06-29}
+
+\begin{document}
+
+\begin{frame}[plain]\frametitle{}
+  \titlepage
+\end{frame}
+
+\end{document}

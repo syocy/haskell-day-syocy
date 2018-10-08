@@ -27,6 +27,7 @@ library:
   dependencies:
     - dhall
     - parallel
+    - async
     - stm
     - text
     - bytestring

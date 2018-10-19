@@ -18,27 +18,23 @@
     1. 目的による分類
     1. スレッドの有無による分類
     1. 分散
-1. Haskell における並列並行の道具
+1. Haskell における並列並行のプリミティブ
     1. 軽量スレッドと評価戦略
-1. 軽量スレッドによる並列と並行
-    1. 軽量スレッドの作成: async (forkIO)
-    1. MVar によるスレッド間通信
-    1. ソフトウェアトランザクショナルメモリ
+1. 軽量スレッドを明示的に使う
+    1. 軽量スレッドの作成: acync (forkIO)
+    1. 軽量スレッド間の通信
     1. A Tour of Go in Haskell の宣伝
-1. Haskell の評価を改変する
+1. コードの評価順序を改変する
     1. まっすぐな評価を並列にする
     1. 評価戦略を分離する
-1. 並列プロファイリング
-    1. ThreadScope
-1. 紹介しなかった並列並行ツール
-    1. データフロー並列・パイプライン並列
-    1. データ並列
-    1. Haxl: 自動並行データアクセス
-    1. GPU プログラミング
-    1. distributed-process (Cloud Haskell)
+1. より高度なツール
+    1. 自動的な並列化 (Parモナド, Haxl)
+    1. 行列計算の並列化 (repa, accelerate)
+    1. 分散プログラミング (distributed-process a.k.a. Cloud Hakell)
+    1. 軽量スレッドのプロファイリング (ThreadScope)
 1. まとめ
-1. おまけ: Haskell の並列並行関連のニュース
-    1. GHC の NUMA サポート
-    1. Facebook での成果: -qn オプション
-    1. ApplicativeDo
+1. おまけ: Haskell の並列並行関連のニュース (時間が押していたら飛ばす)
+    1. ApplicativeDo (GHC 8.0)
+    1. Facebook での成果: -qn オプション (GHC 8.2)
+    1. GHC の NUMA サポート (GHC 8.2)
     1. 暗号通貨 Cardano は Cloud Haskell を使っている?

@@ -39,8 +39,10 @@ packages:
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
 extra-deps:
-  - dhall-1.17.0
-  - serialise-0.2.0.0
+  - dhall-1.18.0
+  - serialise-0.2.1.0
+  - megaparsec-7.0.2
+  - repline-0.2.0.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

@@ -12,3 +12,4 @@ haskell-day-syocy.cabal
 *.toc
 *.out
 auto/
+.history

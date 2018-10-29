@@ -1,8 +1,27 @@
 ## Dhall: Haskellの新たなキラーアプリ
 
-1. 設定ファイル
-1. Dhall とは
-1. 
+1. 設定ファイルの問題
+1. Dhall のモチベーション
+1. 導入方法
+    1. dhall-to-json/dhall-to-yaml
+    1. dhall コマンド
+1. Kubernetes の Yaml を書いてみる
+    1. Kubernetes の wall of Yaml
+    1. Kubernetes Yaml のサンプル
+    1. Dhall ver.1
+    1. Dhall ver.1 を Yaml に変換
+    1. Dhall で Kubernetes Yaml の型を定義
+    1. Union を文字列に戻す
+    1. Dhall ver.2
+    1. デフォルト値などを自由に定義する
+1. Dhall 関連ツールの紹介
+    1. dhall サブコマンド群
+    1. アプリケーション
+    1. 言語バインディング
+1. Haskell から Dhall を使う（時間が押していたら飛ばす）
+    1. Haskell で Dhall ファイルを読む
+    1. Haskell で Dhall を拡張する
+1. まとめ
 
 ## 並列並行言語Haskell
 

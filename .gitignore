@@ -13,3 +13,4 @@ haskell-day-syocy.cabal
 *.out
 auto/
 .history
+.shake

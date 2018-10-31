@@ -110,7 +110,7 @@
 
 \section{}
 
-\begin{frame}{参考書}
+\begin{frame}[plain]{参考書}
   \centering
   Haskellによる並列・並行プログラミング
   (写真)
@@ -183,7 +183,7 @@
     \end{itemize}
   \item 実行時システムが\alert{軽量スレッド}をサポートする
     \begin{itemize}
-    \item よく並列性の実現にはスレッドが用いられるが、
+    \item よく並行性の実現にはスレッドが用いられるが、
     \item あたかも普通の(OS)スレッドのように使えるものが、普通のスレッドよりはるかに軽く動作する
     \end{itemize}
   \end{itemize}
@@ -262,13 +262,19 @@
 
 \end{frame}
 
-\begin{frame}{おまけ: Haskellの並列・並行関連のニュース}
+\begin{frame}[plain]{おまけ: Haskellの並列・並行関連のニュース}
   \begin{enumerate}
   \item ApplicativeDo (GHC 8.0)
   \item Facebook での成果: -qn オプション (GHC 8.2)
   \item GHC の NUMA サポート (GHC 8.2)
   \item 暗号通貨 Cardano は Cloud Haskell を使っている？
   \end{enumerate}
+\end{frame}
+
+\begin{frame}[plain]{おまけ: 軽量スレッドの消費メモリ(引用)}
+  \centering
+  \includegraphics[width=.7\textwidth]{pic/tso.png}
+  \footnote{Reference: takenobu-hs, ``haskell-ghc-illustrated'' - \url{https://takenobu-hs.github.io/downloads/haskell_ghc_illustrated.pdf}}
 \end{frame}
 
 \end{document}

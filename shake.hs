@@ -30,6 +30,8 @@ import Control.Monad (forM_)
 import Network.HTTP.Types (urlDecode)
 
 version = "v0.0.1"
+description = ""
+
 tokenName = "GITHUB_RELEASE_TOKEN"
 endpoint = "api.github.com"
 owner = "syocy"
@@ -78,7 +80,7 @@ createRelease token = runReq def $ do
         [ "tag_name" .= t version
         , "target_commitish" .= t "master"
         , "name" .= t version
-        , "body" .= t "desc"
+        , "body" .= t description
         , "draft" .= True
         , "prerelease" .= True
         ]

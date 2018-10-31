@@ -24,7 +24,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as LBS
-import Control.Lens hiding ((.=))
+import Control.Lens hiding ((.=), (<.>))
 import Data.Aeson.Lens
 import Control.Monad (forM_)
 import Network.HTTP.Types (urlDecode)
@@ -36,21 +36,27 @@ tokenName = "GITHUB_RELEASE_TOKEN"
 endpoint = "api.github.com"
 owner = "syocy"
 repo = "haskell-day-syocy"
-pdfs = ["slides/dhall.pdf", "slides/parallel-and-concurrent.pdf"]
+dhallPdf = "slides/dhall.pdf"
+parconPdf = "slides/parallel-and-concurrent.pdf"
+pdfs = [dhallPdf, parconPdf]
 
 main = shakeArgs shakeOptions $ do
   want pdfs
   "slides/*.pdf" %> \out -> do
     let texFile = out -<.> "tex"
     need [texFile]
-    command_ [Cwd "slides"] "llmk" []
+    buildPdf out
   phony "nop" $ do
     putNormal "nop"
-  phony "once" $ do
-    command_ [Cwd "slides"] "llmk" []
-  phony "github-release" $ do
+  phony "dhall" $ do
+    need [dhallPdf]
+  phony "parcon" $ do
+    need [parconPdf]
+  phony "twice" $ do
     need pdfs
-    need ["once"]
+    forM_ pdfs buildPdf
+  phony "github-release" $ do
+    need ["twice"]
     tokenMaybe <- getEnv tokenName
     case tokenMaybe of
       Nothing -> fail "no token found"
@@ -64,6 +70,12 @@ main = shakeArgs shakeOptions $ do
         _ <- liftIO $ finishRelease token r
         return ()
 
+buildPdf fileName = do
+  let llmkFile = "slides" </> "llmk_" <> (dropDirectory1 $ dropExtension fileName) <.> "toml"
+  cmd_ ["cp", llmkFile, "slides/llmk.toml"]
+  ret <- command_ [Cwd "slides"] "llmk" []
+  command_ [Cwd "slides"] "rm" ["llmk.toml"]
+  return ret  
 
 data Release a = Release
   { rUrl :: a

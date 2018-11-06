@@ -29,7 +29,7 @@ import Data.Aeson.Lens
 import Control.Monad (forM_)
 import Network.HTTP.Types (urlDecode)
 
-version = "v0.0.1"
+version = "v0.0.2"
 description = ""
 
 tokenName = "GITHUB_RELEASE_TOKEN"

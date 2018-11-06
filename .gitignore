@@ -14,3 +14,4 @@ haskell-day-syocy.cabal
 auto/
 .history
 .shake
+*.eventlog

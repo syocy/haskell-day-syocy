@@ -44,7 +44,7 @@ main = shakeArgs shakeOptions $ do
   want pdfs
   "slides/*.pdf" %> \out -> do
     let texFile = out -<.> "tex"
-    need [texFile]
+    need ["src/Lib.hs", texFile]
     buildPdf out
   phony "nop" $ do
     putNormal "nop"

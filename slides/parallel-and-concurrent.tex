@@ -92,6 +92,10 @@
 \newlength{\mycolumnwidth}
 \mycolumnwidth=\dimexpr\mytotalwidth-5mm
 
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+\renewcommand{\UrlFont}{\ttfamily\scriptsize}
+
 \title{並列並行言語Haskell}
 \author[@syocy]{
     \frame{\includegraphics[width=1cm]{icon.jpg}}\\%
@@ -111,12 +115,23 @@
 \section{}
 
 \begin{frame}[plain]{参考書}
+  \begin{columns}[totalwidth=\mytotalwidth]
+    \begin{column}[T]{0.5\mycolumnwidth}
+      \centering
+      \includegraphics[width=\columnwidth]{pic/book.jpg} \\
+      Haskellによる並列・並行\\ プログラミング
+    \end{column}
+    \begin{column}[t]{0.5\mycolumnwidth}
+      \begin{itemize}
+      \item GHCの主要開発者 Simon Marlow 自身による並列・並行 Haskell の解説書
+      \item 並列・並行の様々なアイデアが紹介されており Haskell ユーザ以外にもおすすめ
+      \end{itemize}
+    \end{column}
+  \end{columns}
   \centering
-  Haskellによる並列・並行プログラミング
-  (写真)
 \end{frame}
 
-\section{並列・並行の動向}
+\section{並列・並行をやるモチベーション}
 
 \begin{frame}{プロセッサ性能トレンド}
   \includegraphics[width=\textwidth]{pic/42-years-processor-trend.png}
@@ -144,9 +159,9 @@
     の物理コアを持つCPUがご家庭でも手に入れられるお値段になった
     \end{itemize}
   \begin{tabular}{llll} \hline
-    CPU & Core & Freq & Price\footnote{価格は変動します} \\ \hline
-    Ryzen TR 2990WX & 32-core 64-thread & 3.00GHz & \$1799 \\
-    Ryzen TR 2950X & 16-core 32-thread & 3.50GHz & \$899 \\
+    CPU & Core & Freq & Price \\ \hline
+    Ryzen TR 2990WX & 32-core 64-thread & 3.0GHz & \$1799 \\
+    Ryzen TR 2950X & 16-core 32-thread & 3.5GHz & \$899 \\
     Ryzen TR 1920X & 12-core 24-thread & 3.5GHz & \$399 \\
     \hline
   \end{tabular}
@@ -156,7 +171,7 @@
   最近話題の言語はコアな部分に並列並行機能を備えていることが多い \\
   → 並列並行の重要性が意識され始めた
   \begin{itemize}
-  \item Go: goroutine(軽量スレッド)を持つ
+  \item Go: goroutine(コルーチン)を持つ
   \item Erlang, Elixir: VMが軽量プロセスを持つ
   \item Rust: メモリー安全性が並行性にも及ぶことを強調している
   \end{itemize}
@@ -202,26 +217,13 @@
   に違いはあるの？
 \end{frame}
 
-\begin{frame}{目的による分類}
-  並列と並行には異なる目的がある
+\begin{frame}{並列と並行}
   \begin{itemize}
-  \item 並列(parallel): 複数の情報処理ユニットを使うことによって処理を高速化したい
-  \item 並行(concurrent): そもそも複数の情報処理ユニットが必要である処理をしたい
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{スレッドの有無による分類}
-  言い換えると
-  \begin{itemize}
-  \item 並列(parallel)
+  \item 並列(parallel): 同時に走らせることで処理を\alert{高速化}したい
     \begin{itemize}
-    \item 「並列化しない元の処理」が存在する
-    \item 明示的にスレッドの概念を必要としないが、スレッドを使って実現してもよい
+    \item 用例: n並列、並列ダウンロード、GPU並列計算
     \end{itemize}
-  \item 並行(concurrent)
-    \begin{itemize}
-    \item アルゴリズム的にスレッド(もしくはそれ以上の強さのもの)の概念を必要とする
-    \end{itemize}
+  \item 並行(concurrent): \alert{そもそも}同時にしたい処理がある
   \end{itemize}
 \end{frame}
 
@@ -247,13 +249,118 @@
   \end{itemize}
 \end{frame}
 
+\subsection{軽量スレッドを明示的に使う}
+
 \begin{frame}{軽量スレッドを作成する}
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=40,lastline=49]{../src/Lib.hs}
+\end{frame}
+
+\begin{frame}{軽量スレッドを作成する}
+  \begin{itemize}
+  \item \alert{\ttfamily{async}} 関数で軽量スレッドを作る
+    \begin{itemize}
+    \item async パッケージに入っている
+    \item 実体は標準関数 \ttfamily{forkIO} の薄いラッパー。
+      \ttfamily{async} の方がより安全で便利なので利用推奨。
+    \end{itemize}
+    \item \ttfamily{wait} 関数で軽量スレッドの終了を待つこともできる
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{スレッド間通信}
+  STMでアトミックなMapを作る例
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=60,lastline=72]{../src/Lib.hs}
+\end{frame}
+
+\begin{frame}{スレッド間通信}
+  スレッド間通信には大まかに２つの方法がある
+  \begin{itemize}
+  \item {\ttfamily MVar}
+    \begin{itemize}
+    \item シンプルな同期変数
+    \item アクセスの\alert{公平性}が保証される
+    \item MVarによるチャネルとセマフォの実装がある
+    \end{itemize}
+  \item STM(Software Transactional Memory)
+    \begin{itemize}
+    \item 共有状態の読み書きに\alert{トランザクション}の概念を導入
+      \begin{itemize}
+      \item 割り込まれない一連の読み書きブロック
+      \item 途中で失敗したらなかったことにしてリトライできる
+      \end{itemize}
+    \item STMによるチャネル、キュー、制限付きキュー、セマフォ等の実装がある
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{宣伝: A Tour of Go in Haskell\footnote{\url{https://a-tour-of-go-in-haskell.syocy.net/ja_JP/index.html}}}
+  \centering
+  \includegraphics[width=.55\textwidth]{pic/a_tour_of_go_in_haskell.png}
+  \begin{itemize}
+  \item Go のチュートリアル ``A Tour of Go'' の並行性の章を Haskell で書いた
+  \item 並行構文の軽さは Go と Haskell で同じくらい
+  \item STMがあるぶん Haskell の方がうまく書ける例も
+  \end{itemize}
+\end{frame}
+
+\subsection{評価順序を改変する}
+
+\begin{frame}{}
 
 \end{frame}
 
 \section{より高レイヤーのツール}
 
-\begin{frame}{}
+\begin{frame}{自動的な並列化}
+  \begin{itemize}
+  \item Parモナド
+    \begin{itemize}
+    \item データフロー並列: データフローグラフの並列にできるところを並列化
+    \item パイプライン並列: データ処理パイプラインの各段を並列化
+    \end{itemize}
+  \item Haxl
+    \begin{itemize}
+    \item データソースへのクエリを自動的に並列化する
+    \item Facebookのスパムフィルタで使われている
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{行列計算の並列化}
+  \begin{itemize}
+  \item repa
+    \begin{itemize}
+      \item 行列計算について自動並列の一種であるデータ並列を導入する
+    \end{itemize}
+  \item accelerate
+    \begin{itemize}
+      \item 行列計算の並列化をサポートする
+      \item repaと違い、Haskell以外のコードを生成する; GPU, LLVM IR,..
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{分散プログラミング}
+  \begin{itemize}
+  \item distributed-process a.k.a. Cloud Haskell
+    \begin{itemize}
+    \item Haskellに分散プログラミングを導入するフレームワーク
+    \item Erlang, Elixirの軽量プロセスに近い実行モデル
+    \item とある暗号通貨の実装に使われているらしい
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{マルチスレッドプロファイリング}
+  \begin{itemize}
+  \item ThreadScope
+    \begin{itemize}
+    \item Haskell の実行時プロファイルを可視化してくれるツール
+    \item 各OS向けにバイナリ配布されているので導入しやすい
+    \end{itemize}
+  \end{itemize}
+  \centering
+  \includegraphics[width=.5\textwidth]{pic/threadscope.png}
 \end{frame}
 
 \section{}
@@ -262,7 +369,7 @@
 
 \end{frame}
 
-\begin{frame}[plain]{おまけ: Haskellの並列・並行関連のニュース}
+\begin{frame}[plain]{補遺: Haskellの並列・並行関連のニュース}
   \begin{enumerate}
   \item ApplicativeDo (GHC 8.0)
   \item Facebook での成果: -qn オプション (GHC 8.2)
@@ -271,7 +378,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}[plain]{おまけ: 軽量スレッドの消費メモリ(引用)}
+\begin{frame}[plain]{補遺: 軽量スレッドの消費メモリ(引用)}
   \centering
   \includegraphics[width=.7\textwidth]{pic/tso.png}
   \footnote{Reference: takenobu-hs, ``haskell-ghc-illustrated'' - \url{https://takenobu-hs.github.io/downloads/haskell_ghc_illustrated.pdf}}

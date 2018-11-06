@@ -93,6 +93,7 @@
 \mycolumnwidth=\dimexpr\mytotalwidth-5mm
 
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\setcounter{footnote}{1}
 
 \renewcommand{\UrlFont}{\ttfamily\scriptsize}
 
@@ -268,14 +269,14 @@
 \end{frame}
 
 \begin{frame}{スレッド間通信}
-  STMでアトミックなMapを作る例
+  STMでアトミックなMapを操作する例
   \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=60,lastline=72]{../src/Lib.hs}
 \end{frame}
 
 \begin{frame}{スレッド間通信}
   スレッド間通信には大まかに２つの方法がある
   \begin{itemize}
-  \item {\ttfamily MVar}
+  \item MVar
     \begin{itemize}
     \item シンプルな同期変数
     \item アクセスの\alert{公平性}が保証される
@@ -311,6 +312,13 @@
 
 \section{より高レイヤーのツール}
 
+\begin{frame}{より高レイヤーのツール}
+  \begin{itemize}
+    \item ここまでHaskellのプリミティブな並列・並行機能（軽量スレッド、評価戦略）を見てきた
+    \item ここからはより高レイヤーの並列・並行ツールを簡単に紹介していく
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{自動的な並列化}
   \begin{itemize}
   \item Parモナド
@@ -345,7 +353,7 @@
   \item distributed-process a.k.a. Cloud Haskell
     \begin{itemize}
     \item Haskellに分散プログラミングを導入するフレームワーク
-    \item Erlang, Elixirの軽量プロセスに近い実行モデル
+    \item 実行モデルはErlang, Elixirの軽量プロセスに近い
     \item とある暗号通貨の実装に使われているらしい
     \end{itemize}
   \end{itemize}
@@ -355,7 +363,7 @@
   \begin{itemize}
   \item ThreadScope
     \begin{itemize}
-    \item Haskell の実行時プロファイルを可視化してくれるツール
+    \item Haskellの実行時システムのログを可視化してくれるツール
     \item 各OS向けにバイナリ配布されているので導入しやすい
     \end{itemize}
   \end{itemize}

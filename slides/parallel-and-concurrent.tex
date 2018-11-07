@@ -269,11 +269,6 @@
 \end{frame}
 
 \begin{frame}{スレッド間通信}
-  STMでアトミックなMapを操作する例
-  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=60,lastline=72]{../src/Lib.hs}
-\end{frame}
-
-\begin{frame}{スレッド間通信}
   スレッド間通信には大まかに２つの方法がある
   \begin{itemize}
   \item MVar
@@ -293,6 +288,11 @@
     \item STMによるチャネル、キュー、制限付きキュー、セマフォ等の実装がある
     \end{itemize}
   \end{itemize}
+\end{frame}
+
+\begin{frame}{スレッド間通信}
+  STMで共有カウンターを操作する例
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=60,lastline=69]{../src/Lib.hs}
 \end{frame}
 
 \begin{frame}{宣伝: A Tour of Go in Haskell\footnote{\url{https://a-tour-of-go-in-haskell.syocy.net/ja_JP/index.html}}}

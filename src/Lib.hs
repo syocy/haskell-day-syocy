@@ -57,19 +57,19 @@ helloworld = do
 
 
 -- |
--- >>> atomicMap
--- fromList [("someKey",1000)]
-atomicMap :: IO ()
-atomicMap = do
-  amap <- newTVarIO (Map.empty :: Map String Int)
+-- >>> atomicCounter
+-- 1000
+atomicCounter :: IO ()
+atomicCounter = do
+  counter <- newTVarIO (0 :: Int)
   ts <- replicateM 1000 $ async $ do
           atomically $ do
-            modifyTVar' amap $ Map.alter inc "someKey"
+            modifyTVar' counter $ (+1)
   forM_ ts wait
-  print =<< atomically (readTVar amap)
-    where
-      inc Nothing = Just 1
-      inc (Just x) = Just (x+1)
+  print =<< atomically (readTVar counter)
+
+
+
 
 
 

@@ -7,7 +7,8 @@ import Control.Monad
 import Control.Monad.STM
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-
+import Control.Parallel
+import Control.Parallel.Strategies
 
 
 someFunc :: IO ()
@@ -30,7 +31,6 @@ helloworld1 = do
     putStrLn "world" ---- "world" を出力
   putStrLn "hello"   -- "hello" を出力
   wait t1            -- スレッド t1 の終了を待つ
-
 
 
 
@@ -70,3 +70,35 @@ atomicMap = do
     where
       inc Nothing = Just 1
       inc (Just x) = Just (x+1)
+
+
+
+
+
+
+-- |
+-- >>> mutualPow 5 2
+-- (25,32)
+mutualPow :: Int -> Int -> (Int, Int)
+mutualPow x y = let z1 = x ^ y in
+                let z2 = y ^ x in
+                (z1, z2) -- z1とz2を並列に計算したい
+
+
+
+-- |
+-- >>> mutualPowPar 5 2
+-- (25,32)
+mutualPowPar :: Int -> Int -> (Int, Int)
+mutualPowPar x y = let z1 = x ^ y in
+                   let z2 = y ^ x in
+                   z1 `par` z2 `pseq` (z1, z2)
+
+
+
+-- |
+-- >>> mutualPowSt 5 2
+-- (25,32)
+mutualPowSt :: Int -> Int -> (Int, Int)
+mutualPowSt x y = (mutualPow x y)
+                    `using` (parTuple2 rseq rseq)

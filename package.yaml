@@ -44,7 +44,6 @@ executables:
     dependencies:
     - haskell-day-syocy
     - parallel
-    - ghc-compact
 
 tests:
   doctests:

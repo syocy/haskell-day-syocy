@@ -261,10 +261,10 @@
   \item \alert{\ttfamily{async}} 関数で軽量スレッドを作る
     \begin{itemize}
     \item async パッケージに入っている
-    \item 実体は標準関数 \ttfamily{forkIO} の薄いラッパー。
-      \ttfamily{async} の方がより安全で便利なので利用推奨。
+    \item 実体は標準関数 {\ttfamily forkIO} の薄いラッパー。
+      {\ttfamily async} の方がより安全で便利なので利用推奨。
     \end{itemize}
-    \item \ttfamily{wait} 関数で軽量スレッドの終了を待つこともできる
+    \item {\ttfamily wait} 関数で軽量スレッドの終了を待つこともできる
   \end{itemize}
 \end{frame}
 
@@ -289,6 +289,7 @@
       \item 割り込まれない一連の読み書きブロック
       \item 途中で失敗したらなかったことにしてリトライできる
       \end{itemize}
+      \item 複雑な共有状態の処理をミスなく記述しやすい
     \item STMによるチャネル、キュー、制限付きキュー、セマフォ等の実装がある
     \end{itemize}
   \end{itemize}
@@ -306,8 +307,30 @@
 
 \subsection{評価順序を改変する}
 
-\begin{frame}{}
+\begin{frame}{評価順序を改変する: 並列化前のコード}
+  \begin{itemize}
+  \item Haskellは必要になった式を「順番に」評価していく
+  \item デフォルトでGC以外が自動的に並列化されることはない(はず)
+  \item しかし、\alert{並列に評価してほしい箇所を指示}できる
+  \end{itemize}
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=80,lastline=85]{../src/Lib.hs}
+\end{frame}
 
+\begin{frame}{評価順序を改変する: 評価の並列化}
+  \begin{itemize}
+    \item {\ttfamily par}関数は第一引数の評価を並列化する
+    \item {\ttfamily pseq}関数は直列化を指示する
+  \end{itemize}
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=90,lastline=95]{../src/Lib.hs}
+\end{frame}
+
+\begin{frame}{評価順序を改変する: 評価戦略の分離}
+  \begin{itemize}
+    \item 典型的なデータ構造にいちいち並列化を指示するのは面倒
+    \item \alert{評価戦略}という形で並列化指示を分離できる
+    \item 自作のデータ構造に評価戦略を作ることもできる
+    \end{itemize}
+  \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=100,lastline=104]{../src/Lib.hs}
 \end{frame}
 
 \section{より高レイヤーのツール}
@@ -374,7 +397,10 @@
 \section{}
 
 \begin{frame}{まとめ}
-
+  \begin{itemize}
+  \item CPUの性能を引き出すには並列・並行が必要になってくる時代
+  \item Haskellは現在並列・並行が得意とされる言語と同等以上に並列・並行の道具が揃っている
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[plain]{補遺: Haskellの並列・並行関連のニュース}

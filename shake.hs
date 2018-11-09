@@ -39,6 +39,7 @@ repo = "haskell-day-syocy"
 dhallPdf = "slides/dhall.pdf"
 parconPdf = "slides/parallel-and-concurrent.pdf"
 pdfs = [dhallPdf, parconPdf]
+dhallYamls = ["dhall/k_notype.dhall.yaml", "dhall/k_service.dhall.yaml", "dhall/"]
 
 main = shakeArgs shakeOptions $ do
   want pdfs
@@ -46,9 +47,26 @@ main = shakeArgs shakeOptions $ do
     let texFile = out -<.> "tex"
     need ["src/Lib.hs", texFile]
     buildPdf out
+  "dhall/*.dhall.yaml" %> \out -> do
+    let dhallFile = dropExtension out 
+    need [dhallFile]
+    putNormal dhallFile
+    let dhallFile1 = dropDirectory1 dhallFile
+    let out1 = dropDirectory1 out
+    let cmdStr0 = "cat " ++ dhallFile1 ++ " | dhall-to-yaml"
+    let cmdStr = "cat " ++ dhallFile1 ++ " | dhall-to-yaml > " ++ out1
+    cmd_ Shell (Cwd "dhall") $ "echo \"# " ++ cmdStr0 ++ "\" > " ++ out1
+    cmd_ Shell (Cwd "dhall") $ "cat " ++ dhallFile1 ++ " | dhall-to-yaml >> " ++ out1
   phony "nop" $ do
     putNormal "nop"
+  phony "clean" $ do
+    removeFilesAfter "dhall" ["//*.dhall.yaml"]
+    removeFilesAfter "slides" ["//*.pdf"]
   phony "dhall" $ do
+    dhallFiles <- fmap (filter (/="k_types.dhall")) $ getDirectoryFiles "dhall" ["//*.dhall"]
+    let yamlFiles = map (("dhall"</>) . (<.>"yaml")) dhallFiles
+    forM_ yamlFiles putNormal
+    need yamlFiles
     need [dhallPdf]
   phony "parcon" $ do
     need [parconPdf]

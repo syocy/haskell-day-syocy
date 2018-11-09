@@ -224,7 +224,12 @@
     \begin{itemize}
     \item 用例: n並列、並列ダウンロード、GPU並列計算
     \end{itemize}
-  \item 並行(concurrent): \alert{そもそも}同時にしたい処理がある
+  \item 並行(concurrent): \alert{そもそも}同時にしたい（同時であるかのように見せたい）処理がある
+    \begin{itemize}
+    \item 同時さは擬似的でもよい
+    \item 並行の表現にはよくスレッドの概念が用いられる
+      \footnote{スレッドが本当に同時に動く実装の場合、並列のためにスレッドを使うこともある}
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -235,7 +240,7 @@
     \begin{itemize}
     \item 通信時間がかかるため、基本共有メモリを持たない
     \item 一部のマシンがダウンするかもしれない
-    \item マシンによって性質が異なることがありうる
+    \item マシンごとに性質が異なることがありうる
     \end{itemize}
   \end{itemize}
   このスライドでは分散にはあまり触れない
@@ -265,6 +270,10 @@
       {\ttfamily async} の方がより安全で便利なので利用推奨。
     \end{itemize}
     \item {\ttfamily wait} 関数で軽量スレッドの終了を待つこともできる
+    \item {\ttfamily cancel} 関数で軽量スレッドを外から止めることもできる
+      \begin{itemize}
+      \item 軽量スレッドに非同期例外が飛ぶ形になる
+      \end{itemize}
   \end{itemize}
 \end{frame}
 

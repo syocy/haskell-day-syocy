@@ -28,14 +28,16 @@
 }
 
 \lstdefinelanguage{yaml}{
-  keywords={let, in},
+  keywords={true,false,yes,no},
   keywordstyle=\color{main}\bfseries,
+  %basicstyle=\ttfamily,
   identifierstyle=\color{text},
   sensitive=false,
-  comment=[l]{--},
+  comment=[l]{\#},
   %morecomment=[s]{{-}{-}},
-  commentstyle=\color{subtext}\ttfamily,
+  commentstyle=\color{main}\ttfamily,
   stringstyle=\color{main}\ttfamily,
+  moredelim=**[il][\color{accent}:\color{subtext}]{:},
   morestring=[b]',
   morestring=[b]"
 }
@@ -94,13 +96,173 @@
     @syocy%
 }
 
-%\institute{Engineering team}
-\date{2018-06-29}
+\date{2018-11-10}
 
 \begin{document}
 
 \begin{frame}[plain]\frametitle{}
   \titlepage
+\end{frame}
+
+\section{Dhallとは}
+
+\begin{frame}{設定ファイルとは}
+  \begin{itemize}
+  \item コンパイルなどの前処理をせずにプログラムのパラメータを変えたい
+  \item → パラメータをソースコードの外に切り離したい
+  \item → \alert{設定ファイル}\footnote{他にもプログラムのモジュラリティを高めるなどの効能もある}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{既存の設定ファイル言語への不満}
+  \begin{itemize}
+  \item 現在主流の設定ファイル言語は機能が少ない
+    \begin{itemize}
+    \item 同じ値を繰り返し書きたくない(Don't Repeat Yourself)
+    \item 入ってはいけない変な値が入っていたら教えてほしい(静的検査, 型)
+    \item 設定ファイルの中で別の設定ファイルをインポートしたい
+    \end{itemize}
+  \item ただし、設定ファイルとしての領分は守ってほしい
+    \begin{itemize}
+    \item 副作用を持っていて動作が不定だったり、
+    \item 無限ループを起こしてハングしたりはしないでほしい
+    \end{itemize}
+  \end{itemize}
+
+  なにかいいものはないのか
+\end{frame}
+
+\begin{frame}[plain]\frametitle{}
+  \centering
+  \vspace{2em}
+  \Huge\fontsize{60}{70}\brush\textcolor{text}{Dhall}
+\end{frame}
+
+\begin{frame}{Dhallの特徴}
+
+\end{frame}
+
+\begin{frame}{インポート機能}
+
+\end{frame}
+
+\begin{frame}{プリミティブな型}
+
+\end{frame}
+
+\begin{frame}{複合型}
+
+\end{frame}
+
+\begin{frame}{導入方法}
+
+\end{frame}
+
+\section{例題: KubernetesのYAMLを書いてみる}
+
+\begin{frame}{例題: KubernetesのYAMLを書いてみる}
+  \begin{itemize}
+  \item 最近話題のOSS, KubernetesはYAMLを大量に用いることで有名
+    \begin{itemize}
+    \item Wall of YAMLなどとも呼ばれる
+    \item 実際さまざまなYAML管理のソリューションが存在する
+    \end{itemize}
+  \item 今回は{\ttfamily dhall-to-yaml}を用いて安全・便利にKubernetesのYAMLを生成してみる
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{目的とするYAML}{{\ttfamily service.yaml}\footnote{\url{https://kubernetes.io/docs/concepts/services-networking/service/}}}
+  \lstinputlisting[breaklines=false,numbers=left,language=yaml]{../dhall/service.yaml}
+\end{frame}
+
+\begin{frame}{愚直なDhall}{\ttfamily k\_notype.dhall}
+  まず型とかは考えずに愚直に書いてみる
+  \lstinputlisting[breaklines=false,numbers=left,language=dhall]{../dhall/k_notype.dhall}
+\end{frame}
+
+\begin{frame}{愚直なDhallをYAMLに変換}
+  目的とするYAMLができた！
+  \lstinputlisting[breaklines=false,numbers=left,language=yaml]{../dhall/k_notype.dhall.yaml}
+\end{frame}
+
+\begin{frame}{よりDhallらしい方法}
+  \begin{itemize}
+  \item 型などを意識しなくても目的とするYAMLはできた
+    \begin{itemize}
+    \item ユースケースによってはこれくらいでもまあ便利
+    \end{itemize}
+  \item さらにDhallの能力を引き出すなら、型やデフォルト値などを用意することができる
+    \begin{itemize}
+    \item 基本的なアイデアとしては、 
+      \begin{itemize}
+      \item Union型を用いて記述できる値を制限する
+      \item Record型でデフォルト値を用意する
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kubernetes YAMLの型を定義(1/2)}{\ttfamily k\_types.dhall}
+  Kubernetes YAMLの型を定義するファイルを作る
+  \lstinputlisting[breaklines=false,numbers=left,language=dhall,firstline=1,lastline=13]{../dhall/k_types.dhall}
+\end{frame}
+
+\begin{frame}{Kubernetes YAMLの型を定義(2/2)}{\ttfamily k\_types.dhall}
+  Unionで表現した{\ttfamily ApiVersion}などをYAMLのStringに戻す処理も必要（実装は省略）
+  \lstinputlisting[breaklines=false,numbers=left,language=dhall,firstline=18,lastline=29]{../dhall/k_types.dhall}
+\end{frame}
+
+\begin{frame}{定義した型を利用して書き直す}{\ttfamily k\_service.dhall}
+  \lstinputlisting[breaklines=false,numbers=left,language=dhall]{../dhall/k_service.dhall}
+\end{frame}
+
+\begin{frame}{型付き版をYAMLに変換}
+  より安全にKubernetes YAMLが表現できた
+  \lstinputlisting[breaklines=false,numbers=left,language=yaml]{../dhall/k_service.dhall.yaml}
+\end{frame}
+
+\begin{frame}{デフォルト値(1/2)}{\ttfamily k\_service\_default.dhall}
+  Kubernetes YAMLのデフォルト値を作ってみる
+  \lstinputlisting[breaklines=true,numbers=left,language=dhall,firstline=1,lastline=6]{../dhall/k_service_default.dhall}
+  デフォルト値を用意すると、同じような値をたくさん作るときに間違いをしにくくなる
+  （今回例示するのは１つ）
+\end{frame}
+
+\begin{frame}{デフォルト値(2/2)}{\ttfamily k\_service\_default.dhall}
+  Recordは演算子 {\ttfamily ∧}で組み合わせることができる
+  \lstinputlisting[breaklines=false,numbers=left,language=dhall,firstline=8,lastline=19]{../dhall/k_service_default.dhall}
+\end{frame}
+
+\begin{frame}{デフォルト値版をYAMLに変換}
+  もちろんこれまでと同じくYAMLに変換できる
+  \lstinputlisting[breaklines=false,numbers=left,language=yaml]{../dhall/k_service_default.dhall.yaml}
+\end{frame}
+
+\section{}
+
+\begin{frame}[plain]{まとめ}
+  \begin{itemize}
+  \item Dhallは\alert{設定ファイルとしての限界}を突き詰めた言語
+    \begin{itemize}
+    \item インポート・型・関数などの機能を持ちながら、
+    \item 副作用や無限ループの危険がない
+    \end{itemize}
+  \item \alert{YAML/JSONに変換できる}ため、既存資産に組み入れやすい
+    \begin{itemize}
+    \item Mac, Linuxにはバイナリ配布があり導入もしやすい
+    \end{itemize}
+  \item \alert{ユースケースに合わせたレベル}で利用できる
+    \begin{itemize}
+    \item インポートとデフォルト値があればいい
+    \item ばりばり厳密に型を定義したい、など
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{補遺: より高度な使い方}
+
+\begin{frame}{補遺: より高度な使い方}
+
 \end{frame}
 
 \end{document}

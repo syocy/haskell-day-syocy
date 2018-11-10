@@ -7,6 +7,7 @@
 \setmonofont{x14y24pxHeadUpDaisy}
 \newfontfamily{\magnolia}{Magnolia Script}
 \newfontfamily{\brush}{Brush Script MT}
+\newfontfamily{\doulos}{Doulos SIL}
 
 \usepackage{luatexja-ruby}
 \usepackage{url}
@@ -110,7 +111,7 @@
   \begin{itemize}
   \item コンパイルなどの前処理をせずにプログラムのパラメータを変えたい
   \item → パラメータをソースコードの外に切り離したい
-  \item → \alert{設定ファイル}\footnote{他にもプログラムのモジュラリティを高めるなどの効能もある}
+  \item → \alert{設定ファイル}
   \end{itemize}
 \end{frame}
 
@@ -120,7 +121,7 @@
     \begin{itemize}
     \item 同じ値を繰り返し書きたくない(Don't Repeat Yourself)
     \item 入ってはいけない変な値が入っていたら教えてほしい(静的検査, 型)
-    \item 設定ファイルの中で別の設定ファイルをインポートしたい
+    \item 大きい設定ファイルを分割したい(インポート)
     \end{itemize}
   \item ただし、設定ファイルとしての領分は守ってほしい
     \begin{itemize}
@@ -138,24 +139,116 @@
   \Huge\fontsize{60}{70}\brush\textcolor{text}{Dhall}
 \end{frame}
 
-\begin{frame}{Dhallの特徴}
-
+\begin{frame}{Dhallとは}
+  \begin{itemize}
+    \item 今まで挙げた特徴を備えた設定ファイル言語
+      \begin{itemize}
+      \item \alert{型・関数・インポート}の機能がある
+      \item 無限ループは起こらない（チューリング完全ではない）
+      \item 副作用は（標準では）ない
+      \end{itemize}
+    \item 読みは {\doulos dɔl} (US) もしくは {\doulos dɔːl} (UK)
+      \begin{itemize}
+      \item カタカナでは「ダール」もしくは「ドール」?
+      \item このスライドでは「ダール」と発音する
+      \end{itemize}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{インポート機能}
-
+\begin{frame}{Dhallの開発体制}
+  \begin{itemize}
+    \item 言語仕様は独立して管理されている
+      \begin{itemize}
+      \item \url{https://github.com/dhall-lang/dhall-lang}
+      \end{itemize}
+    \item 主要ツール、および言語仕様の参照実装はHaskellで書かれている
+      \begin{itemize}
+      \item \url{https://github.com/dhall-lang/dhall-haskell}
+      \end{itemize}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{プリミティブな型}
+\begin{frame}{Dhallの型: プリミティブな型}
+  \centering
+  \begin{tabular}{lll} \hline
+    型 & 意味 & リテラル(例)\\ \hline
+    \texttt{Bool} & 真偽値 & \texttt{True}, \texttt{False}\\
+    \texttt{Natural} & 0以上の整数 & \texttt{0}, \texttt{1}\\
+    \texttt{Integer} & 符号付き整数 & \texttt{-1}, \texttt{+1}\\
+    \texttt{Double} & 小数点付き数 & \texttt{0.1}, \texttt{-2e10}\\
+    \texttt{Text} & 文字列 & \texttt{""}, \texttt{"abc"}\\ \hline
+  \end{tabular}
 
+  \begin{itemize}
+  \item プリミティブ型には一般的なものが揃っている
+  \item 数値の型はできるだけ \texttt{Natural} を使うのがおすすめ
+    \begin{itemize}
+    \item 使える標準関数が多いため
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{複合型}
+\begin{frame}{Dhallの型: 複合型}
+  \centering
+  \begin{tabular}{lll} \hline
+    型 & 意味 & 値の例\\ \hline
+    \texttt{List} & 0個以上の値の集まり & \lstinline|[1,2,3]| \\
+    \texttt{Optional} & 0〜1個の値の集まり & \lstinline|Some 1| \\
+    Record & キーと値のペアの集まり & \lstinline|{a=1, b=2}| \\
+    Union & 「どれかひとつ」を表す & {\footnotesize\texttt{<A=\{=\}|B:\{\}>}} \\ \hline
+  \end{tabular}
 
+  \begin{itemize}
+  \item RecordはJSONのオブジェクトに相当
+  \item Unionの書き方が特徴的
+    \begin{itemize}
+    \item 上記の例では「AとBのラベルがあるUnion型でAを選んだ値」となる
+    \item 記述をサポートする標準関数がある
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{導入方法}
+\begin{frame}{インポート}
+  ローカルパスとURLからのインポートができる
+  \begin{itemize}
+  \item ローカルパスからのインポート
+    \begin{itemize}
+    \item \texttt{let config = ./my/local/config.dhall}
+    \end{itemize}
+  \item URLからのインポート
+    \begin{itemize}
+    \item \texttt{let config = https://example.com/config.dhall}
+    \item インポートにあたってハッシュ値のチェックをすることもできる
+    \end{itemize}
+  \item Dhallファイルではないraw textのインポートも可能
+    \begin{itemize}
+    \item 長い自然言語文章などに
+    \end{itemize}
+  \end{itemize}
+\end{frame}
 
+\begin{frame}{Dhallの導入は難しい?}
+  \begin{itemize}
+  \item なるほどDhallは便利かも
+  \item だけど自分の使っている言語にバインディングがない\footnote{今のところ最新仕様に準拠したバインディングはHaskellのみ}
+  \item もうYAMLやJSONで設定作ってしまっているし……
+  \end{itemize}
+
+  本当に導入は難しいのか
+\end{frame}
+
+\begin{frame}{Dhallの導入は簡単}
+  \begin{itemize}
+  \item \alert{dhall-to-yaml/dhall-to-json}
+    \footnote{\url{https://github.com/dhall-lang/dhall-lang/wiki/Getting-started\%3A-Generate-JSON-or-YAML}}
+    がある
+    \begin{itemize}
+      \item DhallファイルをYAMLやJSONに変換するコマンドラインツール
+      \item プログラムでDhallを読み込むことを考えなくて良い
+      \item バインディングがない言語でもDhallを使える
+      \item 導入はMac, Linuxはコマンド一発、WindowsはThe Haskell Tool Stackを入れる必要がある
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \section{例題: KubernetesのYAMLを書いてみる}
@@ -168,6 +261,10 @@
     \item 実際さまざまなYAML管理のソリューションが存在する
     \end{itemize}
   \item 今回は{\ttfamily dhall-to-yaml}を用いて安全・便利にKubernetesのYAMLを生成してみる
+    \begin{itemize}
+    \item 実はすでにdhall-kubernetes\footnote{\url{https://github.com/dhall-lang/dhall-kubernetes}}というのがあり、本当にKubernetes YAML
+      を作るならそれを使う方がよい。今回はあくまで例題としてDIYする。
+    \end{itemize}
   \end{itemize}
 \end{frame}
 

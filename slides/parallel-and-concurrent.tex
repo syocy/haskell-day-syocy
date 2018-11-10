@@ -115,6 +115,17 @@
 
 \section{}
 
+\begin{frame}[plain]{このスライドについて}
+  \begin{itemize}
+  \item スライドおよびソースコードはGitHubで管理しています
+    \begin{itemize}
+    \item \url{https://github.com/syocy/haskell-day-syocy}
+    \item PDFはReleasesにあります
+    \end{itemize}
+  \item スライド中のほとんどのHaskellコードはDoctestでテストされています
+  \end{itemize}
+\end{frame}
+
 \begin{frame}[plain]{参考書}
   \begin{columns}[totalwidth=\mytotalwidth]
     \begin{column}[T]{0.5\mycolumnwidth}
@@ -304,6 +315,14 @@
   \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=60,lastline=69]{../src/Lib.hs}
 \end{frame}
 
+\begin{frame}{並行Haskellまとめ}
+  \begin{itemize}
+  \item Haskellには実行時システムが軽量スレッドをサポートする
+  \item 構文的にも軽い。\texttt{async}を呼ぶだけで軽量スレッドを作れる
+  \item STMによって複雑な共有状態も記述できる
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{宣伝: A Tour of Go in Haskell\footnote{\url{https://a-tour-of-go-in-haskell.syocy.net/ja_JP/index.html}}}
   \centering
   \includegraphics[width=.55\textwidth]{pic/a_tour_of_go_in_haskell.png}
@@ -340,6 +359,13 @@
     \item 自作のデータ構造に評価戦略を作ることもできる
     \end{itemize}
   \lstinputlisting[breaklines=false,numbers=left,language=haskell,firstline=100,lastline=104]{../src/Lib.hs}
+\end{frame}
+
+\begin{frame}{並列Haskellまとめ}
+  \begin{itemize}
+  \item Haskellは式の評価方法を指示することで並列を実現できる
+  \item 評価方法の指示は評価戦略という形で処理本体から分離できる
+  \end{itemize}
 \end{frame}
 
 \section{より高レイヤーのツール}
@@ -408,7 +434,7 @@
 \begin{frame}{まとめ}
   \begin{itemize}
   \item CPUの性能を引き出すには並列・並行が必要になってくる時代
-  \item Haskellは現在並列・並行が得意とされる言語と同等以上に並列・並行の道具が揃っている
+  \item \alert{Haskellには現在並列・並行が得意とされる言語と同等以上に並列・並行の道具が揃っている}
   \end{itemize}
 \end{frame}
 

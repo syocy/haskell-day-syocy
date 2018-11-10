@@ -90,6 +90,11 @@
 \setbeamercolor{title}{fg=main}
 \setbeamercolor{titlelike}{fg=main}
 
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\setcounter{footnote}{1}
+
+\renewcommand{\UrlFont}{\ttfamily\scriptsize}
+
 \title{Dhall: Haskellの新たなキラーアプリ}
 \author[@syocy]{
     \frame{\includegraphics[width=1cm]{icon.jpg}}\\%
@@ -103,6 +108,19 @@
 
 \begin{frame}[plain]\frametitle{}
   \titlepage
+\end{frame}
+
+\section{}
+
+\begin{frame}[plain]{このスライドについて}
+  \begin{itemize}
+  \item スライドおよびソースコードはGitHubで管理しています
+    \begin{itemize}
+    \item \url{https://github.com/syocy/haskell-day-syocy}
+    \item PDFはReleasesにあります
+    \end{itemize}
+    \item スライド中のDhallコードにはすべて公式フォーマッタをかけています
+  \end{itemize}
 \end{frame}
 
 \section{Dhallとは}
@@ -150,7 +168,7 @@
     \item 読みは {\doulos dɔl} (US) もしくは {\doulos dɔːl} (UK)
       \begin{itemize}
       \item カタカナでは「ダール」もしくは「ドール」?
-      \item このスライドでは「ダール」と発音する
+      \item このスライドでは「ダール」で通します
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -194,7 +212,7 @@
     型 & 意味 & 値の例\\ \hline
     \texttt{List} & 0個以上の値の集まり & \lstinline|[1,2,3]| \\
     \texttt{Optional} & 0〜1個の値の集まり & \lstinline|Some 1| \\
-    Record & キーと値のペアの集まり & \lstinline|{a=1, b=2}| \\
+    Record & キーと値のペアの集まり & \lstinline|\{a=1, b=2\}| \\
     Union & 「どれかひとつ」を表す & {\footnotesize\texttt{<A=\{=\}|B:\{\}>}} \\ \hline
   \end{tabular}
 
@@ -359,7 +377,71 @@
 \section{補遺: より高度な使い方}
 
 \begin{frame}{補遺: より高度な使い方}
+  \begin{itemize}
+    \item \texttt{dhall} コマンドラインツール
+    \item 紹介しなかった言語機能
+    \item HaskellでDhallを直接読み込む
+    \item HaskellでDhallを拡張する
+  \end{itemize}
+\end{frame}
 
+\begin{frame}{\texttt{dhall} コマンドラインツール}
+  \begin{itemize}
+  \item このスライドではもっぱらdhall-to-yaml/dhall-to-jsonを使ってきた
+    \begin{itemize}
+    \item Mac, LinuxだとHaskell環境がなくても導入できるため
+    \end{itemize}
+  \item (今のところ)Haskell環境が必要だが\texttt{dhall}コマンドを導入するとより幸せになれる
+  \item 便利なサブコマンド(一部)
+    \begin{itemize}
+    \item \texttt{dhall format}: 公式フォーマッタ
+    \item \texttt{dhall repl}: Dhallインタラクティブ環境
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{紹介しなかった言語機能}
+  \begin{itemize}
+    \item 多相な関数
+    \item 型の型（カインド）
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{HaskellでDhallを直接読み込む}
+  \begin{itemize}
+  \item このスライドではもっぱらdhall-to-yaml/dhall-to-jsonを使って、DhallをYAML/JSONに変換する方法を見てきた
+  \item Haskellにはバインディングがあり、YAML等を介さずにDhallファイルをHaskellの型として読み込むことができる
+  \item YAML/JSON以外の形式に変換したい場合、あるいはHaskellプログラムの設定ファイルとして
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{HaskellでDhallを拡張する}
+  \begin{itemize}
+  \item HaskellによってDhallのビルトイン関数を追加することができる
+  \item 標準Dhallにはできないダーティなこともできるかも？
+    \begin{itemize}
+    \item IO副作用とか
+    \end{itemize}
+  \item ただし、標準ツールチェインの恩恵を受けられなくなることに注意
+    \begin{itemize}
+    \item 標準ツールチェインも改造すればいいが大変
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]{事例紹介}
+  \begin{itemize}
+  \item 跋扈していた混沌のJSON
+    \begin{itemize}
+    \item 1〜3文字の略語キー: x,o,pw,..
+    \item ヒントのない列挙型の値: 1,2,3,..
+    \item 独自マクロがあるが、それを書くとJSONとしてinvalidになる
+    \end{itemize}
+  \item Dhallで定義し直して上記の問題を解決した
+    \begin{itemize}
+    \item invaid JSONを作るためにdhal-to-jsonは使えなかったため、Haskellで変換処理を書いた
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \end{document}

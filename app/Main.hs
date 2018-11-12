@@ -19,5 +19,5 @@ chunkedXs = f xs []
 main :: IO ()
 main = do
   let tmp = map sum chunkedXs `using` parList rseq
-  let ret = sum rrr
+  let ret = sum tmp
   print ret
